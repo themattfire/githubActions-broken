@@ -1,43 +1,48 @@
 # RZFeeser@alta3.com
-# GitHub Flow - Broken
+# GitHub Flow - Working (Fixed)
 
-# .github/workflows/java-demo.yml (BROKEN ON PURPOSE)
+# .github/workflows/java-demo.yml (FIXED)
+# Each line is commented to explain what it does.
 
-# This file contains common GitHub Actions/YAML mistakes to trigger a failure.
-# You'll fix these in the next section.
+name: Java CI (Fixed)                           # A friendly, updated name for the workflow
 
-  name: Java CI (Fixed)                         # A friendly name for the workflow
+on:                                             # Begin the trigger configuration block
+  push:                                         # Run this workflow on any push
+    branches:                                   # Limit to specific branches
+      - main                                    # Only push events on 'main' will trigger
 
-on:                                            # The event trigger block begins
-  push:                                        # Trigger on pushes
-    branches:                                  # Limit to specific branches
-      - main                                   # Only run on pushes to 'main'
+jobs:                                           # Define all jobs in this workflow
+  build:                                        # 'build' is the job identifier
+    runs-on: ubuntu-latest                      # ✅ Correct key: 'runs-on' specifies the VM image used by the runner
 
-jobs:                                          # All jobs are defined under 'jobs'
-  build:                                       # A job ID named 'build'
-    runs-on: ubuntu-latest                      
-                                               
+    steps:                                      # ✅ Correct key: 'steps' is a list; each step starts with '-'
+      - name: Checkout repository               # Step: fetch the repository contents into the runner
+        uses: actions/checkout@v4               # 'uses' references an existing action by owner/repo@version
 
-    steps:                                     
-      - name: Checkout                        
-        use: actions/checkout@v4             
+      - name: Set up Java                       # Step: install and configure a JDK in the runner
+        uses: actions/setup-java@v4             # Use the official Java setup action
+        with:                                   # Provide inputs to the action
+          distribution: temurin                 # Choose the JDK distribution (Temurin is a popular OpenJDK build)
+          java-version: "21"                    # ✅ Correct input: 'java-version' (singular). Installs JDK 21.
 
-      - name: Setup Java                       # Next (still under the wrong 'step' key)
-        uses: actions/setup-java@v55            
-        with:                            
-          distribution: temurin              
-          java-version: "21"                 
+      - name: Show Java version                 # Optional step: confirm which Java is installed
+        run: java -version                      # Prints the Java version for verification in the logs
 
-      - name: Pull Hello.java into runner      # Attempt to download the source file
-        run: |                                 # Multi-line run script
-          mkdir -p src                         # Make a directory where we'll store the Java file
+      - name: Create working directory          # Prepare a folder to hold pulled source
+        run: mkdir -p src                       # '-p' creates the directory if it doesn't exist
+
+      - name: Pull Hello.java into runner       # Demonstrate "pulling" source via curl from *this* repo's raw URL
+        run: |                                  # Multi-line script
           cp Hello.java src/Hello.java
-          ls -l src                             # List to confirm file presence
+          ls -l src                             # Confirm Hello.java exists in 'src/'
 
-      - name: Compile Java                     # Compile the pulled Java file
-        run: javac src/Hello.java              # Compile to produce src/Hello.class
+      - name: Compile Java                      # Compile Hello.java to produce Hello.class
+        run: |                                  # Multi-line script
+          javac src/Hello.java                  # 'javac' compiles the Java source file
+          echo "Compiled files:"                # Print a label for the next list output
+          ls -l src                             # Confirm Hello.class was created next to Hello.java
 
-      - name: Run Java                         # Execute the class
-        run: |                                 # Multi-line run script
-          cd src                               # Change into the directory where the class file was created
-          java Hello                           # Run the Hello class (no .class extension)
+      - name: Run Java                          # Execute the compiled class file
+        run: |                                  # Multi-line script
+          cd src                                # Change directory to where Hello.class resides
+          java Hello                            # Run the Hello program (class name only, no .class extension)

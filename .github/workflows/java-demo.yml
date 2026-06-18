@@ -1,0 +1,43 @@
+# RZFeeser@alta3.com
+# GitHub Flow - Broken
+
+# .github/workflows/java-demo.yml (BROKEN ON PURPOSE)
+
+# This file contains common GitHub Actions/YAML mistakes to trigger a failure.
+# You'll fix these in the next section.
+
+name: Java CI (Broken)                         # A friendly name for the workflow
+
+on:                                            # The event trigger block begins
+  push:                                        # Trigger on pushes
+    branches:                                  # Limit to specific branches
+      - main                                   # Only run on pushes to 'main'
+
+jobs:                                          # All jobs are defined under 'jobs'
+  build:                                       # A job ID named 'build'
+    run-on: ubuntu-latest                      
+                                               
+
+    step:                                     
+      - name: Checkout                        
+        use: actions/checkout@v4             
+
+      - name: Setup Java                       # Next (still under the wrong 'step' key)
+        uses: actions/setup-java@v55            
+        with:                            
+          distribution: temurin              
+          java-versions: "21"                 
+
+      - name: Pull Hello.java into runner      # Attempt to download the source file
+        run: |                                 # Multi-line run script
+          mkdir -p src                         # Make a directory where we'll store the Java file
+          cp Hello.java src/Hello.java
+          ls -l src                             # List to confirm file presence
+
+      - name: Compile Java                     # Compile the pulled Java file
+        run: javac src/Hello.java              # Compile to produce src/Hello.class
+
+      - name: Run Java                         # Execute the class
+        run: |                                 # Multi-line run script
+          cd src                               # Change into the directory where the class file was created
+          java Hello                           # Run the Hello class (no .class extension)

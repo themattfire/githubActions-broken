@@ -6,7 +6,7 @@
 # This file contains common GitHub Actions/YAML mistakes to trigger a failure.
 # You'll fix these in the next section.
 
-name: Java CI (Broken)                         # A friendly name for the workflow
+  name: Java CI (Fixed)                         # A friendly name for the workflow
 
 on:                                            # The event trigger block begins
   push:                                        # Trigger on pushes
@@ -15,10 +15,10 @@ on:                                            # The event trigger block begins
 
 jobs:                                          # All jobs are defined under 'jobs'
   build:                                       # A job ID named 'build'
-    run-on: ubuntu-latest                      
+    runs-on: ubuntu-latest                      
                                                
 
-    step:                                     
+    steps:                                     
       - name: Checkout                        
         use: actions/checkout@v4             
 
@@ -26,7 +26,7 @@ jobs:                                          # All jobs are defined under 'job
         uses: actions/setup-java@v55            
         with:                            
           distribution: temurin              
-          java-versions: "21"                 
+          java-version: "21"                 
 
       - name: Pull Hello.java into runner      # Attempt to download the source file
         run: |                                 # Multi-line run script
